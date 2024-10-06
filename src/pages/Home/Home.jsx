@@ -61,7 +61,7 @@ const Home = () => {
 
       <Content className="content">
         <div className="slides">
-          <Carousel arrows dotPosition="left" infinite={false} autoplay>
+          <Carousel dotPosition="left" infinite={true} autoplay>
             <div className="container-carousel">
               <img src={hotel1} />
             </div>

@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   left: 0;
-  width: "100%";
+  width: 100%;
   display: "flex";
   align-items: "center";
   z-index: 10;
@@ -22,7 +22,7 @@
 .content {
   display: flex;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
 }
 
 .slides {
@@ -39,7 +39,7 @@
 .card-reservation {
   max-width: 900px;
   position: absolute;
-  bottom: -30px;
+  bottom: 20px;
 }
 
 .card-reservation__travelers {
