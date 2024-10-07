@@ -5,13 +5,11 @@ import {
   Carousel,
   DatePicker,
   Form,
-  Image,
   InputNumber,
   Layout,
   Menu,
-  Space,
+  Space
 } from "antd";
-import React from "react";
 import hotel1 from "../../../public/hotel_1.jpg";
 import hotel2 from "../../../public/hotel_2.jpg";
 import hotel3 from "../../../public/hotel_3.jpg";
@@ -25,17 +23,21 @@ const { Header, Content, Footer } = Layout;
 const menuItems = [
   {
     key: "1",
-    label: "Servicios",
+    label: "Home",
   },
   {
     key: "2",
-    label: "Reservar",
+    label: "servicios",
+  },
+  {
+    key: "3",
+    label: "Habitaciones",
+  },
+  {
+    key: "3",
+    label: "Contacto",
   },
 ];
-const items = new Array(3).fill(null).map((_, index) => ({
-  key: String(index + 1),
-  label: `nav ${index + 1}`,
-}));
 
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
