@@ -34,7 +34,7 @@ const menuItems = [
     label: "Habitaciones",
   },
   {
-    key: "3",
+    key: "4",
     label: "Contacto",
   },
 ];
