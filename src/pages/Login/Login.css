@@ -1,0 +1,23 @@
+
+.container{
+    width: 100vw;
+    height: 100vh;
+    background-color: #cad8e6;
+    display: grid;
+    place-content: center;
+}
+
+.card{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content:space-between;
+}
+
+.card__logo img{
+    width: 250px;
+}
+
+.card-form{
+    text-align: center;
+}
