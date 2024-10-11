@@ -2,7 +2,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, Card, DatePicker, Form, InputNumber, Space } from "antd";
 import React from "react";
 
-const Buscador = ({entryExit}) => {
+const Buscador = ({ onClickSearch }) => {
   const { RangePicker } = DatePicker;
   const dateFormat = "DD/MM/YYYY";
 
@@ -15,7 +15,6 @@ const Buscador = ({entryExit}) => {
             renderExtraFooter={() => "extra footer"}
             format={dateFormat}
             style={{ width: "100%" }}
-            value={entryExit}
           />
         </Form.Item>
 
@@ -40,7 +39,7 @@ const Buscador = ({entryExit}) => {
 
         <Form.Item className="form-reservation__item">
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" onClick={onClickSearch}>
               <SearchOutlined />
             </Button>
           </Space>

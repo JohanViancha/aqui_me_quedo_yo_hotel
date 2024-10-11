@@ -1,16 +1,12 @@
-import {
-  Carousel,
-  Layout,
-  Menu
-} from "antd";
+import { Carousel, Layout, Spin, Menu } from "antd";
 import hotel1 from "../../../public/hotel_1.jpg";
 import hotel2 from "../../../public/hotel_2.jpg";
 import hotel3 from "../../../public/hotel_3.jpg";
 import hotel4 from "../../../public/hotel_4.jpg";
 import logo3 from "../../../public/logo3.png";
-
 import "./Home.css";
 import Buscador from "../../components/Buscador/Buscador";
+import { useState } from "react";
 
 const { Header, Content, Footer } = Layout;
 
@@ -33,8 +29,13 @@ const menuItems = [
   },
 ];
 
-
 const Home = () => {
+  const [isSpin, setIsSpin] = useState(false);
+
+  const searchRooms = () => {
+    setIsSpin(true)
+  };
+
   return (
     <Layout>
       <Header className="header">
@@ -71,9 +72,7 @@ const Home = () => {
           </Carousel>
         </div>
 
-        <Buscador/>
-
-        
+        <Buscador onClickSearch={searchRooms} />
       </Content>
 
       <section></section>
@@ -85,6 +84,13 @@ const Home = () => {
         Nathaly Rodriguez y Jose Sanabria ©{new Date().getFullYear()} Todos los
         derechos reservados
       </Footer>
+
+      <Spin
+        spinning={isSpin}
+        fullscreen
+        size="large"
+        tip="Estamos buscando la mejor acomodación para ti..."
+      />
     </Layout>
   );
 };
