@@ -2,18 +2,25 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import Home from "./pages/Home/Home";
-import Searcher from "./pages/Searcher/Searcher";
 import Login from "./pages/Login/Login";
+import Reservate from "./pages/Reservate/Reservate";
+import Home from "./pages/Home/Home";
+import Landing from "./pages/Landing/Landing";
+import NotFound from "./pages/NotFound/NotFound";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
-    children: [
+    errorElement: <NotFound />,
+    children: [ 
+      {
+        path: '/',
+        element: <Landing />
+      },
       {
         path: "search-rooms",
-        element: <Searcher />,
+        element: <Reservate />,
       },
     ],
   },

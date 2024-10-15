@@ -1,81 +1,22 @@
-import { Carousel, Layout, Spin, Menu } from "antd";
-import hotel1 from "../../../public/hotel_1.jpg";
-import hotel2 from "../../../public/hotel_2.jpg";
-import hotel3 from "../../../public/hotel_3.jpg";
-import hotel4 from "../../../public/hotel_4.jpg";
-import logo3 from "../../../public/logo3.png";
+import { Layout } from "antd";
+import Head from "../../components/Head/Head";
 import "./Home.css";
-import Buscador from "../../components/Buscador/Buscador";
-import { useState } from "react";
 
-const { Header, Content, Footer } = Layout;
+import { Outlet } from "react-router-dom";
 
-const menuItems = [
-  {
-    key: "1",
-    label: "Home",
-  },
-  {
-    key: "2",
-    label: "servicios",
-  },
-  {
-    key: "3",
-    label: "Habitaciones",
-  },
-  {
-    key: "4",
-    label: "Contacto",
-  },
-];
+const { Content, Footer } = Layout;
+
+
 
 const Home = () => {
-  const [isSpin, setIsSpin] = useState(false);
-
-  const searchRooms = () => {
-    setIsSpin(true)
-  };
 
   return (
     <Layout>
-      <Header className="header">
-        <img className="header__logo" src={logo3} alt="Logo" />
-        <Menu
-          theme="dark"
-          className="header__menu"
-          mode="horizontal"
-          defaultSelectedKeys={["1"]}
-          items={menuItems}
-          style={{
-            flex: 1,
-            minWidth: 0,
-          }}
-        />
-      </Header>
-      <div className="container-carousel img-1"></div>
+      <Head />
 
       <Content className="content">
-        <div className="slides">
-          <Carousel dotPosition="left" infinite={true} autoplay>
-            <div className="container-carousel">
-              <img src={hotel1} />
-            </div>
-            <div className="container-carousel">
-              <img src={hotel2} />
-            </div>
-            <div className="container-carousel">
-              <img src={hotel3} />
-            </div>
-            <div className="container-carousel">
-              <img src={hotel4} />
-            </div>
-          </Carousel>
-        </div>
-
-        <Buscador onClickSearch={searchRooms} />
+        <Outlet/>
       </Content>
-
-      <section></section>
       <Footer
         style={{
           textAlign: "center",
@@ -85,12 +26,6 @@ const Home = () => {
         derechos reservados
       </Footer>
 
-      <Spin
-        spinning={isSpin}
-        fullscreen
-        size="large"
-        tip="Estamos buscando la mejor acomodación para ti..."
-      />
     </Layout>
   );
 };

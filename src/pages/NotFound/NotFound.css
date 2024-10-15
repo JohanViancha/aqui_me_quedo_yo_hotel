@@ -1,0 +1,20 @@
+.error-page {
+  background-color: #cad8e6;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.error-page h1 {
+  margin: 0;
+  font-size: 3rem;
+}
+
+.error-page > span {
+    font-size: 1.2rem;
+    font-weight: bold;
+}

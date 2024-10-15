@@ -1,8 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase } from "firebase/getDatabase";
-import { getAuth } from "firebase/getAuth";
-import { getStorage } from "firebase/getStorage";
+import { getDatabase } from "firebase/database";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -11,6 +9,7 @@ import { getStorage } from "firebase/getStorage";
 const firebaseConfig = {
   apiKey: "AIzaSyDt9EImI8cuA5xMtyT5Qv3H_6GK66xsMRE",
   authDomain: "clima-95956.firebaseapp.com",
+  databaseURL: "https://clima-95956-default-rtdb.firebaseio.com",
   projectId: "clima-95956",
   storageBucket: "clima-95956.appspot.com",
   messagingSenderId: "345980094646",
@@ -21,7 +20,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getDatabase(app);
-const auth = getAuth(app);
-const storage = getStorage(app);
+// const auth = getAuth(app);
 
-export { app, db, auth, storage };
+export { app, db };
