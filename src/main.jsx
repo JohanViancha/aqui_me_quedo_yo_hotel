@@ -20,12 +20,14 @@ const router = createBrowserRouter([
         path: "search-rooms",
         element: <Reservate />,
       },
+
+      {
+        path:'login',
+        element: <Login />
+      }
     ],
   },
-  {
-    path:'/login',
-    element: <Login />
-  }
+  
  
 ]);
 createRoot(document.getElementById("root")).render(
