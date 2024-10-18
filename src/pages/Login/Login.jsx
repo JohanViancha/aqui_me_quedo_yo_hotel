@@ -17,7 +17,7 @@ const Login = () => {
                 label="Usuario"
                 name="username"
                 rules={[
-                  { required: true, message: "Please input your username!" },
+                  { required: true, message: "Por favor ingresar tu usuario!" },
                 ]}
               >
                 <Input />
@@ -28,7 +28,7 @@ const Login = () => {
                 label="Contraseña"
                 name="password"
                 rules={[
-                  { required: true, message: "Please input your password!" },
+                  { required: true, message: "Por favor ingresar tu contraseña!" },
                 ]}
               >
                 <Input.Password />
