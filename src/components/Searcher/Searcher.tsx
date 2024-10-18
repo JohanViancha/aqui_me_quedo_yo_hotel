@@ -8,7 +8,16 @@ const Searcher = ({ onClickSearch }) => {
   const { RangePicker } = DatePicker;
   const dateFormat = "DD/MM/YYYY";
 
-  const onClick = () => {};
+  const onClick = () => {
+    if (
+      form.getFieldValue("rooms") &&
+      form.getFieldValue("children") &&
+      form.getFieldValue("date") &&
+      form.getFieldValue("adults")
+    ) {
+      onClickSearch();
+    }
+  };
 
   return (
     <Card bordered={false} className="card-reservation">
@@ -36,7 +45,7 @@ const Searcher = ({ onClickSearch }) => {
           rules={[{ required: true, message: "Campo requerido" }]}
         >
           <InputNumber
-            placeholder="Niños"
+            placeholder="Adultos"
             min={1}
             max={10}
             style={{ width: "100%" }}

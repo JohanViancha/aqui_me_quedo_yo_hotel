@@ -1,14 +1,18 @@
 import { onValue, ref } from "firebase/database";
 import { db } from "../../firebase.config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const getRooms = async () => {
+const getRoomsAll = () => {
   const [rooms, setRooms] = useState([]);
 
-  const starCountRef = ref(db, "evaluations/");
+  const starCountRef = ref(db, "rooms/");
   onValue(starCountRef, (snapshot) => {
-    setRooms(snapshot.val());
+    setRooms(rooms)
   });
 
-  return rooms;
+  useEffect(()=>{
+    getRoomsAll()
+  },[ ])
 };
+
+export { getRoomsAll };
