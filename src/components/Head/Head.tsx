@@ -9,25 +9,17 @@ const Head = () => {
   const menuItems = [
     {
       key: "1",
-      label: "Home",
+      label: <Link to={"/"}> Home</Link>,
     },
     {
       key: "2",
-      label: "servicios",
-    },
-    {
-      key: "3",
-      label: "Habitaciones",
-    },
-    {
-      key: "4",
-      label: "Contacto",
+      label: <Link to={"/search-rooms"}>Buscar habitación</Link>,
     },
   ];
 
   return (
     <Header className="header">
-      <Link to={'/'}>
+      <Link to={"/"}>
         <img className="header__logo" src={logo3} alt="Logo" />
       </Link>
       <Menu

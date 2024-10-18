@@ -12,24 +12,6 @@ import Searcher from "../../components/Searcher/Searcher";
 import "./Landing.css";
 
 const Landing = () => {
-  const [isSpin, setIsSpin] = useState(false);
-  const navigate = useNavigate()
-
-  const searchRooms = () => {
-    // setIsSpin(true);
-    set(ref(db, "rooms/" + `${uuidv4()}`), {
-      code: 'E125',
-      name: '',
-      description: '',
-      image:'',
-      price:'',
-      services:'',
-      type: ''
-    }).then();
-  
-  
-
-  };
   return (
     <>
       <div className="slides">
@@ -50,16 +32,13 @@ const Landing = () => {
           </Carousel>
         </div>
         <div className="searcher-landing">
-          <Searcher onClickSearch={searchRooms} />
-        </div>  
+          <h2>Tu Escape Soñado en el Corazón de la Ciudad</h2>
+          <p>
+            Descubre el refugio perfecto para tus vacaciones: comodidad,
+            elegancia y vistas inolvidables te esperan en nuestro hotel.
+          </p>
+        </div>
       </div>
-
-      <Spin
-        spinning={isSpin}
-        fullscreen
-        size="large"
-        tip="Estamos buscando la mejor acomodación para ti..."
-      />
     </>
   );
 };

@@ -20,8 +20,18 @@
 .searcher-landing {
   width: 1000px;
   position: absolute;
-  bottom: 3%;
-  box-shadow: 9px 33px 36px -38px rgba(0,0,0,0.75);
-  -webkit-box-shadow: 9px 33px 36px -38px rgba(0,0,0,0.75);
-  -moz-box-shadow: 9px 33px 36px -38px rgba(0,0,0,0.75);  
+  bottom: 20%;
+}
+
+.searcher-landing p {
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+}
+
+.searcher-landing h2 {
+  font-size: 3rem;
+  color: rgb(163, 170, 177);
+  text-align: center;
+  box-shadow: ;
 }

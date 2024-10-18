@@ -1,17 +1,19 @@
 .searcher-reservate {
-  position: relative;
+  position: fixed;
   width: 98vw;
   top: 60px;
   left: 0;
+  z-index: 30;
 }
 
 .main {
   padding: 1rem;
-  margin: 100px 3rem 3rem 3rem;
+  margin: 150px 3rem 3rem 3rem;
 }
 
 .grid {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 2rem;
 }

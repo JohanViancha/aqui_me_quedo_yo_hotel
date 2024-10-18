@@ -4,8 +4,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Home from "./pages/Home/Home";
 import Landing from "./pages/Landing/Landing";
-import Login from "./pages/Login/Login";
-import NotFound from "./pages/NotFound/NotFound";
 import Reservate from "./pages/Reservate/Reservate";
 
 const router = createBrowserRouter([
@@ -23,10 +21,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "login",
-    element: <Login />,
-  },
+ 
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>

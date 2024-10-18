@@ -9,13 +9,13 @@ const Searcher = ({ onClickSearch }) => {
   const dateFormat = "DD/MM/YYYY";
 
   const onClick = () => {
-    if (
-      form.getFieldValue("rooms") &&
-      form.getFieldValue("children") &&
-      form.getFieldValue("date") &&
-      form.getFieldValue("adults")
-    ) {
-      onClickSearch();
+    if (form.getFieldValue("date") && form.getFieldValue("adults")) {
+      onClickSearch({
+        date: form.getFieldValue("date"),
+        adults: form.getFieldValue("adults"),
+        children: form.getFieldValue("children"),
+        rooms: form.getFieldValue("rooms"),
+      });
     }
   };
 
@@ -46,7 +46,7 @@ const Searcher = ({ onClickSearch }) => {
         >
           <InputNumber
             placeholder="Adultos"
-            min={1}
+            min={0}
             max={10}
             style={{ width: "100%" }}
           />
@@ -61,7 +61,7 @@ const Searcher = ({ onClickSearch }) => {
         >
           <InputNumber
             placeholder="Niños"
-            min={1}
+            min={0}
             max={10}
             style={{ width: "100%" }}
           />
@@ -72,7 +72,6 @@ const Searcher = ({ onClickSearch }) => {
           label="Hab."
           className="form-reservation__item"
           style={{ width: "100%" }}
-          rules={[{ required: true, message: "Campo requerido" }]}
         >
           <InputNumber
             placeholder="Habitaciones"
