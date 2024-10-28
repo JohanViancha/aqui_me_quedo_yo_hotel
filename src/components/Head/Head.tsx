@@ -1,11 +1,14 @@
-import { Layout, Menu } from "antd";
+import { Divider, Layout, Menu } from "antd";
 import React from "react";
 import logo3 from "../../../public/logo3.png";
 import "./Head.css";
 import { Link } from "react-router-dom";
+import { useAuthState } from "../../hooks/useAuthState";
 const { Header } = Layout;
 
 const Head = () => {
+  const { user } = useAuthState();
+
   const menuItems = [
     {
       key: "1",
@@ -33,6 +36,28 @@ const Head = () => {
           minWidth: 0,
         }}
       />
+      <div className="auth">
+        {Object.keys(user).length === 0 ? (
+          <>
+            <Link className="auth__login" to={"/login"}>
+              Ingresar
+            </Link>
+            <Divider
+              dashed={true}
+              type="vertical"
+              style={{ background: "white", height: "64px" }}
+            />
+            <Link className="auth__register" to={"/register"}>
+              Register
+            </Link>
+          </>
+        ) : (
+          <Link to={"#"} className="username">
+           
+          {user['email']}
+        </Link>
+        )}
+      </div>
     </Header>
   );
 };

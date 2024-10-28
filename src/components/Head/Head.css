@@ -7,6 +7,18 @@
     align-items: "center";
     z-index: 10;
   }
+
+  .auth {
+    display: flex;
+    gap: 2rem;
+    position: absolute;
+    right: 30px;
+    top: 0;
+  }
+  .auth__login, .auth__register {
+    color: white;
+
+  }
   
   .header__menu {
     margin-left: 20rem;
@@ -17,4 +29,8 @@
     position: absolute;
     left: 20px;
     top: 5px;
+  }
+
+  .username {
+    color: white;
   }

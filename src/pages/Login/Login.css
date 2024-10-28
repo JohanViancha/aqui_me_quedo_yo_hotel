@@ -2,20 +2,33 @@
 .container{
     width: 100vw;
     height: 100vh;
-    background-color: #cad8e6;
+    background-color: rgba(16, 28, 40, 0.686);
     display: grid;
     place-content: center;
 }
 
+.item-password > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.item-username > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
 .card{
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     align-items: center;
     justify-content:space-between;
 }
 
 .card__logo img{
-    width: 250px;
+    display: flex;
+    width: 300px;
 }
 
 .card-form{

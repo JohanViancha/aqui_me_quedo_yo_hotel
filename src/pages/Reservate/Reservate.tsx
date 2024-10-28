@@ -1,13 +1,11 @@
 import { DollarOutlined, TeamOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
-
 import { Button, Card, Image, Modal, Spin, Tag, notification } from "antd";
 import { onValue, ref, set } from "firebase/database";
-import { useEffect, useState } from "react";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 import { db } from "../../../firebase.config";
 import Searcher from "../../components/Searcher/Searcher";
 import "./Reservate.css";
-import { createContext, useMemo } from "react";
 
 const { Meta } = Card;
 
