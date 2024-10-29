@@ -7,10 +7,10 @@ export const useAuthState = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (userData) => {
-        setUser(userData || {})
+      setUser(userData || {});
     });
     return () => unsubscribe();
   }, []);
 
-  return { user};
+  return { user };
 };

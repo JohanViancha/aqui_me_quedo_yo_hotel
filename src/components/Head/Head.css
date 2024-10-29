@@ -1,36 +1,43 @@
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: "flex";
-    align-items: "center";
-    z-index: 10;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
 
-  .auth {
-    display: flex;
-    gap: 2rem;
-    position: absolute;
-    right: 30px;
-    top: 0;
-  }
-  .auth__login, .auth__register {
-    color: white;
+.auth {
+  display: flex;
+  gap: 2rem;
+  position: absolute;
+  right: 30px;
+  top: 0;
+}
+.auth__login,
+.auth__register {
+  color: white;
+}
 
-  }
-  
-  .header__menu {
-    margin-left: 20rem;
-  }
-  
-  .header__logo {
-    width: 150px;
-    position: absolute;
-    left: 20px;
-    top: 5px;
-  }
+.header__menu {
+  margin-left: 20rem;
+}
 
-  .username {
-    color: white;
-  }
+.header__logo {
+  width: 150px;
+  position: absolute;
+  left: 20px;
+  top: 5px;
+}
+
+.username Button {
+  position: relative;
+  color: white;
+  border: 1px solid white;
+}
+
+.item {
+  display: flex;
+  gap: 0.2rem;
+}

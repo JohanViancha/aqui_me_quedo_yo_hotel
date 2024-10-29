@@ -1,7 +1,7 @@
-import React from "react";
-import { Navigate, useNavigate, useRouteError } from "react-router-dom";
-import './NotFound.css'
 import { Button } from "antd";
+import React from "react";
+import { useNavigate, useRouteError } from "react-router-dom";
+import './NotFound.css';
 
 const NotFound = () => {
   const error = useRouteError();

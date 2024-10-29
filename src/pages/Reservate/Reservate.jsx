@@ -2,10 +2,17 @@ import { DollarOutlined, TeamOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { Button, Card, Image, Modal, Spin, Tag, notification } from "antd";
 import { onValue, ref, set } from "firebase/database";
-import React, { createContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { db } from "../../../firebase.config";
 import Searcher from "../../components/Searcher/Searcher";
 import "./Reservate.css";
+import { LoadingContext } from "../../context/useLoadingContext";
 
 const { Meta } = Card;
 
@@ -18,6 +25,7 @@ const Reservate = () => {
   const [isOpen, setisOpen] = useState(false);
   const [roomSelected, setroomSelected] = useState({});
   const [date, setdate] = useState([]);
+  const { isLoading, loading } = useContext(LoadingContext);
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -68,6 +76,7 @@ const Reservate = () => {
   };
 
   const getRoomsAll = (busy = [], people = 0) => {
+    isLoading(true);
     onValue(RoomsRef, (snapshot) => {
       const rooms = snapshot.val();
       for (const key in rooms) {
@@ -77,6 +86,7 @@ const Reservate = () => {
       }
 
       setRooms(rooms);
+      isLoading(false);
     });
   };
 
@@ -115,13 +125,17 @@ const Reservate = () => {
 
         <Card className="main">
           <div className="grid">
-            {Object.keys(rooms).length === 0 && (
+            {(Object.keys(rooms).length === 0 && !loading)  && (
               <span style={{ textAlign: "center" }}>
                 Lo sentimos, no encontramos habitaciones disponibles para las
                 fechas y preferencias seleccionadas. Intenta con otras fechas o
                 ajusta los filtros para ver más opciones.
               </span>
             )}
+
+            {
+              loading && <span>Estamos buscando la mejor habitación para ti.</span>
+            }
 
             {Object.keys(rooms).map((key) => {
               return (

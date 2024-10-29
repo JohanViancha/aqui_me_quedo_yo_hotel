@@ -1,38 +1,40 @@
+import { CloseCircleFilled } from "@ant-design/icons";
 import { Button, Card, Form, Input, notification } from "antd";
 import {
   browserLocalPersistence,
   setPersistence,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
 import "./Login.css";
-import { CloseCircleFilled } from "@ant-design/icons";
-import { NotificationPlacement } from "antd/es/notification/interface";
-import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { LoadingContext } from "../../context/useLoadingContext";
 
 const Login = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { isLoading } = useContext(LoadingContext);
   const [api, contextHolder] = notification.useNotification();
 
   const sendData = async () => {
+    isLoading(true);
     const username = form.getFieldValue("username");
     const password = form.getFieldValue("password");
     setPersistence(auth, browserLocalPersistence).then(() => {
       return signInWithEmailAndPassword(auth, username, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-
+        .then(() => {
+          isLoading(false);
           navigate("/");
         })
-        .catch((error) => {
+        .catch(() => {
           openNotificationError("top");
+          isLoading(false);
         });
     });
   };
 
-  const openNotificationError = (placement: NotificationPlacement) => {
+  const openNotificationError = (placement) => {
     api.open({
       message: "Inició de sesión",
       description: "El usuario y/o contraseña son incorrectos",
