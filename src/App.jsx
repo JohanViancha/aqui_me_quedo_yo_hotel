@@ -6,7 +6,10 @@ import { LoadingContext } from "./context/useLoadingContext";
 import Home from "./pages/Home/Home";
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
+import Verify from "./pages/Verify/Verify";
+
 import Reservate from "./pages/Reservate/Reservate";
+import Register from "./pages/Register/Register";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +30,15 @@ const router = createBrowserRouter([
     path: "login",
     element: <Login />,
   },
+  {
+    path: "verify",
+    element: <Verify />,
+  },
+
+  {
+    path: "register",
+    element: <Register />,
+  }
 ]);
 export const App = () => {
   const { loading } = useContext(LoadingContext);

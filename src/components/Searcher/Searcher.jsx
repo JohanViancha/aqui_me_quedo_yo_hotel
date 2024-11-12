@@ -1,38 +1,75 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Card, DatePicker, Form, InputNumber, Space } from "antd";
-import React from "react";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  InputNumber,
+  Select,
+  Space
+} from "antd";
+import dayjs from "dayjs";
+import React, { useContext } from "react";
+import { ReservationContext } from "../../context/useReservationContext";
 import "./Searcher.css";
 
+// eslint-disable-next-line react/prop-types
 const Searcher = ({ onClickSearch }) => {
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
+  const {
+    setCanReservate,
+    setTypeRoom,
+    setChild,
+    setIspet,
+    setAdults,
+    setRangeDate,
+  } = useContext(ReservationContext);
   const dateFormat = "DD/MM/YYYY";
 
   const onClick = () => {
-    if (form.getFieldValue("date") && form.getFieldValue("adults")) {
-      onClickSearch({
-        date: form.getFieldValue("date"),
-        adults: form.getFieldValue("adults"),
-        children: form.getFieldValue("children"),
-        rooms: form.getFieldValue("rooms"),
-      });
-    }
+    setChild(form.getFieldValue("children")),
+      setIspet(form.getFieldValue("pets")),
+      setTypeRoom(form.getFieldValue("hab")),
+      setAdults(form.getFieldValue("adults"));
+    setRangeDate(form.getFieldValue("date"));
+    onClickSearch(
+      form.getFieldValue("date"),
+      form.getFieldValue("adults"),
+      form.getFieldValue("children"),
+      form.getFieldValue("type"),
+      form.getFieldValue("pets")
+    );
+    setCanReservate(true);
+  };
+
+  const disabledDate = (current) => {
+    return current && current < dayjs().endOf("day");
   };
 
   return (
     <Card bordered={false} className="card-reservation">
-      <Form form={form} className="form-reservation" name="control-hooks">
+      <Form
+        form={form}
+        className="form-reservation"
+        name="control-hooks"
+        layout="vertical"
+        size="default"
+        onFinish={onClick}
+        labelAlign="left"
+      >
         <Form.Item
           rules={[{ required: true, message: "Campo requerido" }]}
           label="Fecha"
           className="form-reservation__item"
-          style={{ width: "100%" }}
           name="date"
         >
           <RangePicker
             placeholder={["Ingreso", "Salida"]}
             renderExtraFooter={() => "extra footer"}
             format={dateFormat}
+            disabledDate={disabledDate}
+            onChange={() => setCanReservate(false)}
             style={{ width: "100%" }}
           />
         </Form.Item>
@@ -40,50 +77,74 @@ const Searcher = ({ onClickSearch }) => {
         <Form.Item
           label="Adultos"
           className="form-reservation__item"
-          style={{ width: "100%" }}
           name="adults"
-          rules={[{ required: true, message: "Campo requerido" }]}
+          rules={[
+            { required: true, message: "Campo requerido" },
+            { type: "number", message: "Solo son números" },
+          ]}
         >
           <InputNumber
             placeholder="Adultos"
-            min={0}
+            min={1}
             max={10}
-            style={{ width: "100%" }}
+            style={{ width: "200px" }}
+            onChange={() => setCanReservate(false)}
           />
         </Form.Item>
 
         <Form.Item
           label="Niños"
           className="form-reservation__item"
-          style={{ width: "100%" }}
           name="children"
-          rules={[{ required: true, message: "Campo requerido" }]}
         >
           <InputNumber
+            style={{ width: "200px" }}
             placeholder="Niños"
             min={0}
             max={10}
-            style={{ width: "100%" }}
+            onChange={() => setCanReservate(false)}
           />
         </Form.Item>
 
         <Form.Item
-          name="rooms"
-          label="Hab."
+          name="type"
+          label="Tip Hab."
           className="form-reservation__item"
-          style={{ width: "100%" }}
         >
-          <InputNumber
-            placeholder="Habitaciones"
-            min={1}
-            max={10}
-            style={{ width: "100%" }}
+          <Select
+            style={{ width: "200px" }}
+            placeholder="Buscar tipo de habitación"
+            options={[
+              { value: "estándar", label: "Habitación Estándar" },
+              { value: "privada", label: "Habitación Privada" },
+              { value: "suite", label: "Habitación Suite" },
+              { value: "deluxe", label: "Habitación Deluxe" },
+              { value: "familiar", label: "Habitación familiar" },
+            ]}
+            onChange={() => setCanReservate(false)}
+          />
+        </Form.Item>
+        <Form.Item
+          name="pets"
+          label="Mascoas"
+          className="form-reservation__item pets"
+          initialValue={0}
+        >
+          <Select
+            style={{ width: "200px" }}
+            placeholder="Permiten mascotas en hab"
+            options={[
+              { value: 0, label: "Indiferente" },
+              { value: 1, label: "Permiten mascotas" },
+              { value: 2, label: "No permiten mascotas" },
+            ]}
+            onChange={() => setCanReservate(false)}
           />
         </Form.Item>
 
         <Form.Item className="form-reservation__item">
           <Space>
-            <Button type="primary" htmlType="submit" onClick={onClick}>
+            <Button type="primary" htmlType="submit">
               <SearchOutlined />
             </Button>
           </Space>

@@ -1,11 +1,10 @@
 import { CloseCircleFilled } from "@ant-design/icons";
 import { Button, Card, Form, Input, notification } from "antd";
 import {
-  browserLocalPersistence,
-  setPersistence,
+  signOut,  
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
 import "./Login.css";
 import { useContext } from "react";
@@ -21,18 +20,20 @@ const Login = () => {
     isLoading(true);
     const username = form.getFieldValue("username");
     const password = form.getFieldValue("password");
-    setPersistence(auth, browserLocalPersistence).then(() => {
-      return signInWithEmailAndPassword(auth, username, password)
-        .then(() => {
-          isLoading(false);
+
+     signInWithEmailAndPassword(auth, username, password)
+        .then((user) => {
           navigate("/");
         })
         .catch(() => {
           openNotificationError("top");
+        })
+        .finally(() => {
           isLoading(false);
         });
-    });
+    
   };
+
 
   const openNotificationError = (placement) => {
     api.open({
@@ -65,7 +66,6 @@ const Login = () => {
               >
                 <Form.Item
                   className="item-username"
-                  style={{ width: 350 }}
                   label="Usuario"
                   name="username"
                   rules={[
@@ -75,12 +75,11 @@ const Login = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input style={{ width: 250 }} />
                 </Form.Item>
 
                 <Form.Item
                   className="item-password"
-                  style={{ width: 350 }}
                   label="Contraseña"
                   name="password"
                   rules={[
@@ -90,7 +89,13 @@ const Login = () => {
                     },
                   ]}
                 >
-                  <Input.Password />
+                  <Input.Password style={{ width: 250 }} />
+                </Form.Item>
+
+                <Form.Item className="register">
+                  <Link to="/register">
+                    ¿No tienes una cuenta? Crear nueva cuenta
+                  </Link>
                 </Form.Item>
 
                 <Button type="primary" htmlType="submit">

@@ -1,31 +1,39 @@
-import { DollarOutlined, TeamOutlined } from "@ant-design/icons";
-import { v4 as uuidv4 } from "uuid";
-import { Button, Card, Image, Modal, Spin, Tag, notification } from "antd";
+import { TeamOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Image,
+  Modal,
+  notification,
+  Spin,
+  Tag,
+  Typography,
+} from "antd";
 import { onValue, ref, set } from "firebase/database";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { MdOutlinePets } from "react-icons/md";
+import { v4 as uuidv4 } from "uuid";
 import { db } from "../../../firebase.config";
 import Searcher from "../../components/Searcher/Searcher";
-import "./Reservate.css";
 import { LoadingContext } from "../../context/useLoadingContext";
+import { ReservationContext } from "../../context/useReservationContext";
+import "./Reservate.css";
+import dayjs from "dayjs";
 
 const { Meta } = Card;
 
 const Context = createContext({
   name: "Default",
 });
+const { Text } = Typography;
 
 const Reservate = () => {
   const [rooms, setRooms] = useState({});
   const [isOpen, setisOpen] = useState(false);
+  const [diferenciesDay, setDiferencesDay] = useState(0);
   const [roomSelected, setroomSelected] = useState({});
-  const [date, setdate] = useState([]);
   const { isLoading, loading } = useContext(LoadingContext);
+  const { rangeDate, canReservate } = useContext(ReservationContext);
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -54,10 +62,23 @@ const Reservate = () => {
     return start1 <= end2 && start2 <= end1;
   };
 
-  const searchRooms = ({ date, adults, children }) => {
+  const searchRooms = (date, adults, children = 0, typeRoom, isPets) => {
+    isPets = isPets === 0 ? undefined : isPets === 1 ? true : false;
+    console.log(date)
+    console.log(adults)
+    console.log(children)
+    console.log(typeRoom)
+    console.log(isPets)
+    setDiferencesDay(
+      dayjs(new Date(date[1]["$d"])).diff(dayjs(new Date(date[0]["$d"])), "day")
+    );
     onValue(reservationRef, (snapshot) => {
-      const keys = Object.keys(snapshot.val());
       const roomsBusy = [];
+      if (!snapshot.val()) {
+        getRoomsAll(roomsBusy, adults + children, isPets, typeRoom);
+        return;
+      }
+      const keys = Object.keys(snapshot.val());
       keys.forEach((key) => {
         const check = validarDisponibility(
           new Date(snapshot.val()[key]["start-date"]),
@@ -67,20 +88,29 @@ const Reservate = () => {
         );
         if (check) roomsBusy.push(snapshot.val()[key]["rooms"]);
       });
-      setdate([
-        String(new Date(date[0]["$d"])),
-        String(new Date(date[1]["$d"])),
-      ]);
-      getRoomsAll(roomsBusy, adults + children);
+      getRoomsAll(roomsBusy, adults + children, isPets, typeRoom);
     });
   };
 
-  const getRoomsAll = (busy = [], people = 0) => {
+  const getRoomsAll = (
+    busy = [],
+    people = 0,
+    isPets = undefined,
+    typeRoom = undefined
+  ) => {
     isLoading(true);
     onValue(RoomsRef, (snapshot) => {
       const rooms = snapshot.val();
       for (const key in rooms) {
         if (busy.includes(key) || people > rooms[key]["people"]) {
+          delete rooms[key];
+        }
+        if (isPets !== undefined && isPets !== rooms[key]["havePets"]) {
+          delete rooms[key];
+        }
+        console.log(typeRoom)
+        console.log(rooms[key]['type'])
+        if (typeRoom && typeRoom !== JSON.stringify(rooms[key]["type"])) {
           delete rooms[key];
         }
       }
@@ -90,15 +120,15 @@ const Reservate = () => {
     });
   };
 
-  const showModal = (keyRoom) => {
+  const showModal = (room) => {
     setisOpen(true);
-    setroomSelected(keyRoom);
+    setroomSelected(room);
   };
 
   const handleOk = () => {
     set(ref(db, "reservations/" + `${uuidv4()}`), {
-      "start-date": date[0],
-      "end-date": date[1],
+      "start-date": new Date(rangeDate[0]["$d"]),
+      "end-date": new Date(rangeDate[1]["$d"]),
       state: "registrado",
       rooms: roomSelected,
     }).then(() => {
@@ -108,6 +138,7 @@ const Reservate = () => {
   };
 
   const handleCancel = () => {
+    setisOpen(false);
     setroomSelected({});
   };
 
@@ -125,7 +156,7 @@ const Reservate = () => {
 
         <Card className="main">
           <div className="grid">
-            {(Object.keys(rooms).length === 0 && !loading)  && (
+            {Object.keys(rooms).length === 0 && !loading && (
               <span style={{ textAlign: "center" }}>
                 Lo sentimos, no encontramos habitaciones disponibles para las
                 fechas y preferencias seleccionadas. Intenta con otras fechas o
@@ -133,19 +164,14 @@ const Reservate = () => {
               </span>
             )}
 
-            {
-              loading && <span>Estamos buscando la mejor habitación para ti.</span>
-            }
+            {loading && (
+              <span>Estamos buscando la mejor habitación para ti.</span>
+            )}
 
             {Object.keys(rooms).map((key) => {
               return (
                 <Card
                   title={rooms[key].name}
-                  extra={
-                    <Tag icon={<DollarOutlined />} color="processing">
-                      {rooms[key].price}
-                    </Tag>
-                  }
                   key={key}
                   style={{ width: 300 }}
                   cover={
@@ -157,24 +183,62 @@ const Reservate = () => {
                     />
                   }
                   actions={[
-                    <Button
-                      key="1"
-                      style={{ width: "90%" }}
-                      disabled={date.length == 0}
-                      onClick={() => showModal(key)}
-                    >
-                      Reservar
-                    </Button>,
+                    <>
+                      <Text strong style={{ fontSize: "20px" }}>
+                        {`${new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          minimumFractionDigits: 0,
+                          currency: "COP",
+                        }).format(rooms[key].price)}`}{" "}
+                      </Text>{" "}
+                      noche
+                      <br />
+                      {diferenciesDay !== 0 && (
+                        <>
+                          {" "}
+                          <Text strong style={{ fontSize: "16px" }}>
+                            {`${new Intl.NumberFormat("en-US", {
+                              style: "currency",
+                              minimumFractionDigits: 0,
+                              currency: "COP",
+                            }).format(diferenciesDay * rooms[key].price)}`}{" "}
+                          </Text>
+                          total
+                        </>
+                      )}
+                      <Button
+                        key="1"
+                        style={{ width: "90%", marginTop: "20px" }}
+                        disabled={!canReservate}
+                        onClick={() => showModal(rooms[key])}
+                      >
+                        Reservar
+                      </Button>
+                      ,
+                    </>,
                   ]}
                 >
                   <Meta
                     style={{ height: 100 }}
                     title={
                       <>
-                        {rooms[key].type}{" "}
+                        <Text
+                          strong
+                          style={{
+                            fontSize: "17px",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          Habitación {rooms[key].type}{" "}
+                        </Text>
                         <Tag icon={<TeamOutlined />} color="default">
                           {rooms[key].people}
                         </Tag>
+                        {rooms[key].havePets && (
+                          <Tag icon={<MdOutlinePets />} color="default">
+                            {" "}
+                          </Tag>
+                        )}
                       </>
                     }
                     description={rooms[key].description}

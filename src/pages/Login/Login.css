@@ -1,36 +1,45 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(16, 28, 40, 0.686);
+  display: grid;
+  place-content: center;
+}
 
-.container{
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(16, 28, 40, 0.686);
-    display: grid;
-    place-content: center;
+h2 {
+  margin: 0 0 1rem 0;
 }
 
 .item-password > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
 }
 
 .item-username > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 3rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 3rem;
 }
 
-.card{
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content:space-between;
+.card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.card__logo img{
-    display: flex;
-    width: 300px;
+.card__logo img {
+  display: flex;
+  width: 300px;
 }
 
-.card-form{
-    text-align: center;
+.card-form {
+  text-align: center;
+}
+
+.register a {
+  text-decoration: underline;
+  color: #1677ff;
+  font-size: 0.8rem;
 }

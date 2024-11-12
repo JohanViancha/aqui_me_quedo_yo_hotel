@@ -55,7 +55,6 @@ const Head = () => {
   ];
 
   const handleMenuClick = (e) => {
-    console.log(e);
     if (e.key === "signout") {
       signOut(auth).then(() => {
         navigate("/login");

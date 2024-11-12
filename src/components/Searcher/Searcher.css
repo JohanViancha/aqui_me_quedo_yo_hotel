@@ -1,6 +1,5 @@
 .card-reservation {
-  width: 100dvw
-
+  width: 100vw
 }
 
 .card-reservation__travelers {
@@ -10,10 +9,11 @@
 
 .form-reservation {
   display: flex;
-  gap: 2rem;
+  justify-content: space-between;
   align-items: center;
 }
 
 .form-reservation__item {
   margin: 0;
 }
+
