@@ -1,10 +1,11 @@
 import { createContext, useState } from "react";
+import dayjs from "dayjs";
 
 export const ReservationContext = createContext({});
 
 // eslint-disable-next-line react/prop-types
 export const ReservationProvider = ({ children }) => {
-  const [rangeDate, setRangeDate] = useState([]);
+  const [rangeDate, setRangeDate] = useState([dayjs(),dayjs()]);
   const [adults, setAdults] = useState(0);
   const [child, setChild] = useState(0);
   const [isPets, setIspet] = useState(false);

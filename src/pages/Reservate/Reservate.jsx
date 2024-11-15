@@ -7,6 +7,7 @@ import {
   notification,
   Spin,
   Tag,
+  Divider,
   Typography,
 } from "antd";
 import { onValue, ref, set } from "firebase/database";
@@ -18,6 +19,7 @@ import Searcher from "../../components/Searcher/Searcher";
 import { LoadingContext } from "../../context/useLoadingContext";
 import { ReservationContext } from "../../context/useReservationContext";
 import "./Reservate.css";
+import "dayjs/locale/es";
 import dayjs from "dayjs";
 
 const { Meta } = Card;
@@ -26,6 +28,7 @@ const Context = createContext({
   name: "Default",
 });
 const { Text } = Typography;
+dayjs.locale("es");
 
 const Reservate = () => {
   const [rooms, setRooms] = useState({});
@@ -63,12 +66,6 @@ const Reservate = () => {
   };
 
   const searchRooms = (date, adults, children = 0, typeRoom, isPets) => {
-    isPets = isPets === 0 ? undefined : isPets === 1 ? true : false;
-    console.log(date)
-    console.log(adults)
-    console.log(children)
-    console.log(typeRoom)
-    console.log(isPets)
     setDiferencesDay(
       dayjs(new Date(date[1]["$d"])).diff(dayjs(new Date(date[0]["$d"])), "day")
     );
@@ -86,18 +83,13 @@ const Reservate = () => {
           new Date(date[0]["$d"]),
           new Date(date[1]["$d"])
         );
-        if (check) roomsBusy.push(snapshot.val()[key]["rooms"]);
+        if (check) roomsBusy.push(Object.keys(snapshot.val()[key]['rooms'])[0]);
       });
       getRoomsAll(roomsBusy, adults + children, isPets, typeRoom);
     });
   };
 
-  const getRoomsAll = (
-    busy = [],
-    people = 0,
-    isPets = undefined,
-    typeRoom = undefined
-  ) => {
+  const getRoomsAll = (busy = [], people = 0, isPets, typeRoom) => {
     isLoading(true);
     onValue(RoomsRef, (snapshot) => {
       const rooms = snapshot.val();
@@ -105,12 +97,20 @@ const Reservate = () => {
         if (busy.includes(key) || people > rooms[key]["people"]) {
           delete rooms[key];
         }
-        if (isPets !== undefined && isPets !== rooms[key]["havePets"]) {
+        if (
+          rooms[key] &&
+          isPets !== 0 &&
+          !!isPets &&
+          isPets !== rooms[key]["havePets"]
+        ) {
           delete rooms[key];
         }
-        console.log(typeRoom)
-        console.log(rooms[key]['type'])
-        if (typeRoom && typeRoom !== JSON.stringify(rooms[key]["type"])) {
+        if (
+          rooms[key] &&
+          typeRoom &&
+          typeRoom !== "todos" &&
+          typeRoom !== rooms[key]["type"]
+        ) {
           delete rooms[key];
         }
       }
@@ -120,17 +120,25 @@ const Reservate = () => {
     });
   };
 
-  const showModal = (room) => {
+  const formatPrice = (value) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      minimumFractionDigits: 0,
+      currency: "COP",
+    }).format(value);
+  };
+
+  const showModal = (room, key) => {
     setisOpen(true);
-    setroomSelected(room);
+    setroomSelected({key, room});
   };
 
   const handleOk = () => {
     set(ref(db, "reservations/" + `${uuidv4()}`), {
-      "start-date": new Date(rangeDate[0]["$d"]),
-      "end-date": new Date(rangeDate[1]["$d"]),
+      "start-date": String(new Date(rangeDate[0]["$d"])),
+      "end-date": String(new Date(rangeDate[1]["$d"])),
       state: "registrado",
-      rooms: roomSelected,
+      rooms: {[roomSelected.key]: roomSelected.room},
     }).then(() => {
       setisOpen(false);
       openNotification("topLeft");
@@ -185,11 +193,7 @@ const Reservate = () => {
                   actions={[
                     <>
                       <Text strong style={{ fontSize: "20px" }}>
-                        {`${new Intl.NumberFormat("en-US", {
-                          style: "currency",
-                          minimumFractionDigits: 0,
-                          currency: "COP",
-                        }).format(rooms[key].price)}`}{" "}
+                        {`${formatPrice(rooms[key]["price"])}`}{" "}
                       </Text>{" "}
                       noche
                       <br />
@@ -197,11 +201,9 @@ const Reservate = () => {
                         <>
                           {" "}
                           <Text strong style={{ fontSize: "16px" }}>
-                            {`${new Intl.NumberFormat("en-US", {
-                              style: "currency",
-                              minimumFractionDigits: 0,
-                              currency: "COP",
-                            }).format(diferenciesDay * rooms[key].price)}`}{" "}
+                            {`${formatPrice(
+                              rooms[key]["price"] * diferenciesDay
+                            )}(${diferenciesDay})`}{" "}
                           </Text>
                           total
                         </>
@@ -210,7 +212,7 @@ const Reservate = () => {
                         key="1"
                         style={{ width: "90%", marginTop: "20px" }}
                         disabled={!canReservate}
-                        onClick={() => showModal(rooms[key])}
+                        onClick={() => showModal(rooms[key], key)}
                       >
                         Reservar
                       </Button>
@@ -234,10 +236,8 @@ const Reservate = () => {
                         <Tag icon={<TeamOutlined />} color="default">
                           {rooms[key].people}
                         </Tag>
-                        {rooms[key].havePets && (
-                          <Tag icon={<MdOutlinePets />} color="default">
-                            {" "}
-                          </Tag>
+                        {rooms[key].havePets === 1 && (
+                          <Tag icon={<MdOutlinePets />} color="default"></Tag>
                         )}
                       </>
                     }
@@ -262,9 +262,37 @@ const Reservate = () => {
           onOk={handleOk}
           onCancel={handleCancel}
         >
+          <Divider type="horizontal" />
+
+          <strong>Datos de Reserva:</strong>
+          <p>
+            <strong>Fecha de ingreso :</strong>
+            {dayjs(new Date(rangeDate[0])).format("DD MMMM YYYY")}
+            <br />
+            <strong>Fecha de salida :</strong>{" "}
+            {dayjs(new Date(rangeDate[1])).format("DD MMMM YYYY")}
+            <br />
+            <strong>Nombre de la hab.: </strong>
+            {/* {roomSelected?.room.name} */}
+            <br />
+            {/* <strong>Código de la hab.: </strong> {roomSelected.room.code} */}
+            <br />
+            <strong>Tipo de hab.: </strong>{" "}
+            <span style={{ textTransform: "capitalize" }}>
+              {/* {roomSelected.room.type} */}
+            </span>
+            <br />
+            <strong>Precio por noche: </strong>{" "}
+            {/* {formatPrice(roomSelected?.room.price)} */}
+            <br />
+            <strong>Total :</strong>{" "}
+            {/* {formatPrice(roomSelected?.room.price * diferenciesDay)} */}
+          </p>
+          <Divider type="horizontal" />
+
           <p>
             ¿Estas seguro que deseas realizar esta reserva?, por favor confirma
-            tu reserva{" "}
+            tu reserva
           </p>
         </Modal>
       </div>

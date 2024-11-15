@@ -9,7 +9,7 @@ import {
   Space
 } from "antd";
 import dayjs from "dayjs";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { ReservationContext } from "../../context/useReservationContext";
 import "./Searcher.css";
 
@@ -110,23 +110,25 @@ const Searcher = ({ onClickSearch }) => {
           name="type"
           label="Tip Hab."
           className="form-reservation__item"
+          initialValue={'todos'}
         >
           <Select
             style={{ width: "200px" }}
             placeholder="Buscar tipo de habitación"
             options={[
+              { value: 'todos', label: 'Todos'},
               { value: "estándar", label: "Habitación Estándar" },
               { value: "privada", label: "Habitación Privada" },
               { value: "suite", label: "Habitación Suite" },
               { value: "deluxe", label: "Habitación Deluxe" },
-              { value: "familiar", label: "Habitación familiar" },
+              { value: "familiar", label: "Habitación Familiar" },
             ]}
             onChange={() => setCanReservate(false)}
           />
         </Form.Item>
         <Form.Item
           name="pets"
-          label="Mascoas"
+          label="Mascotas"
           className="form-reservation__item pets"
           initialValue={0}
         >
