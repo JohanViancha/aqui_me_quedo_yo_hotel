@@ -1,8 +1,6 @@
 import { CloseCircleFilled } from "@ant-design/icons";
 import { Button, Card, Form, Input, notification } from "antd";
-import {
-  signInWithEmailAndPassword
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
@@ -20,19 +18,17 @@ const Login = () => {
     const username = form.getFieldValue("username");
     const password = form.getFieldValue("password");
 
-     signInWithEmailAndPassword(auth, username, password)
-        .then((user) => {
-          navigate("/");
-        })
-        .catch(() => {
-          openNotificationError("top");
-        })
-        .finally(() => {
-          isLoading(false);
-        });
-    
+    signInWithEmailAndPassword(auth, username, password)
+      .then((user) => {
+        navigate("/");
+      })
+      .catch(() => {
+        openNotificationError("top");
+      })
+      .finally(() => {
+        isLoading(false);
+      });
   };
-
 
   const openNotificationError = (placement) => {
     api.open({
@@ -51,7 +47,10 @@ const Login = () => {
         <Card className="card-form">
           <div className="card">
             <div className="card__logo">
-              <img src="../../../public/logo1.png" alt="" />
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Flogo1.png?alt=media&token=22a20c53-15f3-4c24-a638-60c75f95847f"
+                alt=""
+              />
             </div>
             <div className="">
               <h2>Iniciar Sesión</h2>
