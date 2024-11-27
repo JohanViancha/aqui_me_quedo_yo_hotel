@@ -6,15 +6,15 @@ import {
   Form,
   InputNumber,
   Select,
-  Space
+  Space,
 } from "antd";
 import dayjs from "dayjs";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ReservationContext } from "../../context/useReservationContext";
 import "./Searcher.css";
 
 // eslint-disable-next-line react/prop-types
-const Searcher = ({ onClickSearch }) => {
+const Searcher = ({ onClickSearch, shouldReset }) => {
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
   const {
@@ -46,6 +46,12 @@ const Searcher = ({ onClickSearch }) => {
   const disabledDate = (current) => {
     return current && current < dayjs().endOf("day");
   };
+
+  useEffect(() => {
+    if (shouldReset) {
+      form.resetFields(["date", "adults", "children", "type", "pets"]);
+    }
+  }, [shouldReset, form]);
 
   return (
     <Card bordered={false} className="card-reservation">
@@ -110,13 +116,13 @@ const Searcher = ({ onClickSearch }) => {
           name="type"
           label="Tip Hab."
           className="form-reservation__item"
-          initialValue={'todos'}
+          initialValue={"todos"}
         >
           <Select
             style={{ width: "200px" }}
             placeholder="Buscar tipo de habitación"
             options={[
-              { value: 'todos', label: 'Todos'},
+              { value: "todos", label: "Todos" },
               { value: "estándar", label: "Habitación Estándar" },
               { value: "privada", label: "Habitación Privada" },
               { value: "suite", label: "Habitación Suite" },

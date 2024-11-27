@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Verify from "./pages/Verify/Verify";
+import TableRerservations from "./pages/TableReservations/TableRerservations";
 
 import Reservate from "./pages/Reservate/Reservate";
 import Register from "./pages/Register/Register";
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "search-rooms",
         element: <Reservate />,
+      },
+      {
+        path: "my-reservations",
+        element: <TableRerservations />,
       },
     ],
   },

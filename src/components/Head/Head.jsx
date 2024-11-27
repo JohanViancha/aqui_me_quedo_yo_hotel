@@ -59,7 +59,9 @@ const Head = () => {
       signOut(auth).then(() => {
         navigate("/login");
       });
+      return
     }
+    navigate("/my-reservations")
   };
   const menuProps = {
     items,

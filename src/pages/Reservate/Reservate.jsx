@@ -10,7 +10,7 @@ import {
   Divider,
   Typography,
 } from "antd";
-import { onValue, ref, set } from "firebase/database";
+import { get, onValue, ref, set } from "firebase/database";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { MdOutlinePets } from "react-icons/md";
 import { v4 as uuidv4 } from "uuid";
@@ -18,10 +18,11 @@ import { db } from "../../../firebase.config";
 import Searcher from "../../components/Searcher/Searcher";
 import { LoadingContext } from "../../context/useLoadingContext";
 import { ReservationContext } from "../../context/useReservationContext";
+import { auth } from '../../../firebase.config.ts'
 import "./Reservate.css";
 import "dayjs/locale/es";
 import dayjs from "dayjs";
-
+import emailjs from '@emailjs/browser'
 const { Meta } = Card;
 
 const Context = createContext({
@@ -30,13 +31,20 @@ const Context = createContext({
 const { Text } = Typography;
 dayjs.locale("es");
 
+
+const servicesId = import.meta.env.VITE_SERVICE_ID;
+const templateId = import.meta.env.VITE_TEMPLATE_ID;
+const publicKey = import.meta.env.VITE_PUBLIC_KEY;
+
+
 const Reservate = () => {
   const [rooms, setRooms] = useState({});
   const [isOpen, setisOpen] = useState(false);
+  const [shouldReset, setShouldReset] = useState(false);
   const [diferenciesDay, setDiferencesDay] = useState(0);
   const [roomSelected, setroomSelected] = useState({});
   const { isLoading, loading } = useContext(LoadingContext);
-  const { rangeDate, canReservate } = useContext(ReservationContext);
+  const { rangeDate, canReservate, setCanReservate } = useContext(ReservationContext);
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -45,7 +53,7 @@ const Reservate = () => {
       message: `Habitación Reservada`,
       description: (
         <Context.Consumer>
-          {() => "La habitación ha sido reservada correctamente"}
+          {() => "La habitación ha sido reservada. Hemos enviado un correo con la información de la reserva"}
         </Context.Consumer>
       ),
       placement,
@@ -66,6 +74,7 @@ const Reservate = () => {
   };
 
   const searchRooms = (date, adults, children = 0, typeRoom, isPets) => {
+    setShouldReset(false)
     setDiferencesDay(
       dayjs(new Date(date[1]["$d"])).diff(dayjs(new Date(date[0]["$d"])), "day")
     );
@@ -83,7 +92,7 @@ const Reservate = () => {
           new Date(date[0]["$d"]),
           new Date(date[1]["$d"])
         );
-        if (check) roomsBusy.push(Object.keys(snapshot.val()[key]['rooms'])[0]);
+        if (check) roomsBusy.push(Object.keys(snapshot.val()[key]["rooms"])[0]);
       });
       getRoomsAll(roomsBusy, adults + children, isPets, typeRoom);
     });
@@ -130,18 +139,51 @@ const Reservate = () => {
 
   const showModal = (room, key) => {
     setisOpen(true);
-    setroomSelected({key, room});
+    setroomSelected({ key, room });
   };
 
   const handleOk = () => {
-    set(ref(db, "reservations/" + `${uuidv4()}`), {
+    const key = uuidv4();
+    const user = auth.currentUser;
+
+    set(ref(db, "reservations/" + `${key}`), {
       "start-date": String(new Date(rangeDate[0]["$d"])),
       "end-date": String(new Date(rangeDate[1]["$d"])),
-      state: "registrado",
-      rooms: {[roomSelected.key]: roomSelected.room},
+      state: "Confirmada",
+      total: formatPrice(roomSelected.room['price'] * diferenciesDay),
+      rooms: { [roomSelected.key]: roomSelected.room },
+      user: {
+        displayName: user.displayName,
+        email: user.email,
+        uid: user.uid
+      },
+      key: key,
     }).then(() => {
       setisOpen(false);
       openNotification("topLeft");
+      setShouldReset(true)
+     
+      const templateParams = {
+        user: user.displayName,
+        name: roomSelected.room['name'],
+        start:  dayjs(new Date(rangeDate[0])).format("DD MMMM YYYY"), 
+        end:  dayjs(new Date(rangeDate[1])).format("DD MMMM YYYY"),
+        type: roomSelected.room['type'],
+        people: roomSelected.room['people'],  
+        total:  formatPrice(roomSelected.room['price'] * diferenciesDay),
+        email: user.email
+      }
+
+      emailjs.send(servicesId, templateId, templateParams,{publicKey}).then(
+        (response) => {
+          console.log('SUCCESS!', response.status, response.text);
+        },
+        (error) => {
+          console.log('FAILED...', error);
+        },
+      );
+
+      getRoomsAll()
     });
   };
 
@@ -151,6 +193,7 @@ const Reservate = () => {
   };
 
   useEffect(() => {
+    setCanReservate(false)
     getRoomsAll();
   }, []);
 
@@ -159,7 +202,7 @@ const Reservate = () => {
       {contextHolder}
       <div>
         <div className="searcher-reservate">
-          <Searcher onClickSearch={searchRooms} />
+          <Searcher onClickSearch={searchRooms} shouldReset={shouldReset}/>
         </div>
 
         <Card className="main">
@@ -264,30 +307,39 @@ const Reservate = () => {
         >
           <Divider type="horizontal" />
 
-          <strong>Datos de Reserva:</strong>
-          <p>
-            <strong>Fecha de ingreso :</strong>
-            {dayjs(new Date(rangeDate[0])).format("DD MMMM YYYY")}
-            <br />
-            <strong>Fecha de salida :</strong>{" "}
-            {dayjs(new Date(rangeDate[1])).format("DD MMMM YYYY")}
-            <br />
-            <strong>Nombre de la hab.: </strong>
-            {/* {roomSelected?.room.name} */}
-            <br />
-            {/* <strong>Código de la hab.: </strong> {roomSelected.room.code} */}
-            <br />
-            <strong>Tipo de hab.: </strong>{" "}
-            <span style={{ textTransform: "capitalize" }}>
-              {/* {roomSelected.room.type} */}
-            </span>
-            <br />
-            <strong>Precio por noche: </strong>{" "}
-            {/* {formatPrice(roomSelected?.room.price)} */}
-            <br />
-            <strong>Total :</strong>{" "}
-            {/* {formatPrice(roomSelected?.room.price * diferenciesDay)} */}
-          </p>
+          {roomSelected.room && (
+            <>
+              <strong>Datos de Reserva:</strong>
+              <p>
+                <strong>Fecha de ingreso :</strong>
+                {dayjs(new Date(rangeDate[0])).format("DD MMMM YYYY")}
+                <br />
+                <strong>Fecha de salida :</strong>{" "}
+                {dayjs(new Date(rangeDate[1])).format("DD MMMM YYYY")}
+                <br />
+                <strong>Nombre de la hab.: </strong>
+                {roomSelected?.room.name}
+                <br />
+                <strong>Código de la hab.: </strong> {roomSelected.room.code}
+                <br />
+                <strong>Tipo de hab.: </strong>{" "}
+                <span style={{ textTransform: "capitalize" }}>
+                  {roomSelected.room.type}
+                </span>
+                <br />
+                <strong>Cant de personas: </strong>{" "}
+                <span >
+                  {roomSelected.room.people}
+                </span>
+                <br />
+                <strong>Precio por noche: </strong>{" "}
+                {formatPrice(roomSelected?.room.price)}
+                <br />
+                <strong>Total :</strong>{" "}
+                {formatPrice(roomSelected?.room.price * diferenciesDay)}
+              </p>
+            </>
+          )}
           <Divider type="horizontal" />
 
           <p>
