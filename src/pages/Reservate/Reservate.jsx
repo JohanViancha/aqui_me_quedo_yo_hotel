@@ -91,12 +91,14 @@ const Reservate = () => {
       }
       const keys = Object.keys(snapshot.val());
       keys.forEach((key) => {
+        console.log(snapshot.val()[key]["state"])
+
         const check = validarDisponibility(
           new Date(snapshot.val()[key]["start-date"]),
           new Date(snapshot.val()[key]["end-date"]),
           new Date(date[0]["$d"]),
           new Date(date[1]["$d"])
-        );
+        ) && snapshot.val()[key]["state"] === "Confirmada";
         if (check) roomsBusy.push(Object.keys(snapshot.val()[key]["rooms"])[0]);
       });
       getRoomsAll(roomsBusy, adults + children, isPets, typeRoom);
