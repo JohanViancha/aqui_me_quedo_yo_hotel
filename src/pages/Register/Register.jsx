@@ -33,15 +33,14 @@ const Register = () => {
         return;
       }
 
-
-        if(password.length < 6 ){
-          openNotification(
-            "topLeft",
-            "La contraseña debe contener 6 o más caracteres",
-            "Registro de usuario",
-            "error"
-          );
-          return;
+      if (password.length < 6) {
+        openNotification(
+          "topLeft",
+          "La contraseña debe contener 6 o más caracteres",
+          "Registro de usuario",
+          "error"
+        );
+        return;
       }
 
       const userCredential = await createUserWithEmailAndPassword(
@@ -60,12 +59,11 @@ const Register = () => {
         "Registro de usuario",
         "info"
       );
-      form.resetFields(['name','email', 'password', 'confirmPassword'])
+      form.resetFields(["name", "email", "password", "confirmPassword"]);
     } catch (error) {
       console.log(error);
     } finally {
       isLoading(false);
-      
     }
   };
 
@@ -91,7 +89,10 @@ const Register = () => {
         <Card className="card-form">
           <div className="card">
             <div className="card__logo">
-              <img src="../../../public/logo1.png" alt="" />
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Flogo1.png?alt=media&token=22a20c53-15f3-4c24-a638-60c75f95847f"
+                alt=""
+              />
             </div>
             <div>
               <h2>Crear cuenta</h2>
@@ -123,10 +124,11 @@ const Register = () => {
                     {
                       required: true,
                       message: "Por favor ingresar tu email!",
-                    },{
-                      type: 'email',
-                      message: 'El email no tiene el formato correcto'
-                    }
+                    },
+                    {
+                      type: "email",
+                      message: "El email no tiene el formato correcto",
+                    },
                   ]}
                 >
                   <Input style={{ width: "250px" }} />
