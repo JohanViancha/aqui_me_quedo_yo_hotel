@@ -91,8 +91,6 @@ const Reservate = () => {
       }
       const keys = Object.keys(snapshot.val());
       keys.forEach((key) => {
-        console.log(snapshot.val()[key]["state"])
-
         const check = validarDisponibility(
           new Date(snapshot.val()[key]["start-date"]),
           new Date(snapshot.val()[key]["end-date"]),
