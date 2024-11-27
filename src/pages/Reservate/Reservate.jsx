@@ -1,5 +1,5 @@
 import { TeamOutlined } from "@ant-design/icons";
-import emailjs from '@emailjs/browser';
+import emailjs from "@emailjs/browser";
 import {
   Button,
   Card,
@@ -10,6 +10,7 @@ import {
   Spin,
   Tag,
   Typography,
+  Alert,
 } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
@@ -18,11 +19,13 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { MdOutlinePets } from "react-icons/md";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../../../firebase.config";
-import { auth } from '../../../firebase.config.ts';
+import { auth } from "../../../firebase.config.ts";
 import Searcher from "../../components/Searcher/Searcher";
 import { LoadingContext } from "../../context/useLoadingContext";
 import { ReservationContext } from "../../context/useReservationContext";
 import "./Reservate.css";
+import { Link } from "react-router-dom";
+
 const { Meta } = Card;
 
 const Context = createContext({
@@ -31,11 +34,9 @@ const Context = createContext({
 const { Text } = Typography;
 dayjs.locale("es");
 
-
 const servicesId = import.meta.env.VITE_SERVICE_ID;
 const templateId = import.meta.env.VITE_TEMPLATE_ID;
 const publicKey = import.meta.env.VITE_PUBLIC_KEY;
-
 
 const Reservate = () => {
   const [rooms, setRooms] = useState({});
@@ -44,7 +45,9 @@ const Reservate = () => {
   const [diferenciesDay, setDiferencesDay] = useState(0);
   const [roomSelected, setroomSelected] = useState({});
   const { isLoading, loading } = useContext(LoadingContext);
-  const { rangeDate, canReservate, setCanReservate } = useContext(ReservationContext);
+  const { rangeDate, canReservate, setCanReservate } =
+    useContext(ReservationContext);
+  // const { user } = useAuthState();
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -53,7 +56,9 @@ const Reservate = () => {
       message: `Habitación Reservada`,
       description: (
         <Context.Consumer>
-          {() => "La habitación ha sido reservada. Hemos enviado un correo con la información de la reserva"}
+          {() =>
+            "La habitación ha sido reservada. Hemos enviado un correo con la información de la reserva"
+          }
         </Context.Consumer>
       ),
       placement,
@@ -74,7 +79,7 @@ const Reservate = () => {
   };
 
   const searchRooms = (date, adults, children = 0, typeRoom, isPets) => {
-    setShouldReset(false)
+    setShouldReset(false);
     setDiferencesDay(
       dayjs(new Date(date[1]["$d"])).diff(dayjs(new Date(date[0]["$d"])), "day")
     );
@@ -150,40 +155,40 @@ const Reservate = () => {
       "start-date": String(new Date(rangeDate[0]["$d"])),
       "end-date": String(new Date(rangeDate[1]["$d"])),
       state: "Confirmada",
-      total: formatPrice(roomSelected.room['price'] * diferenciesDay),
+      total: formatPrice(roomSelected.room["price"] * diferenciesDay),
       rooms: { [roomSelected.key]: roomSelected.room },
       user: {
         displayName: user.displayName,
         email: user.email,
-        uid: user.uid
+        uid: user.uid,
       },
       key: key,
     }).then(() => {
       setisOpen(false);
       openNotification("topLeft");
-      setShouldReset(true)
-     
+      setShouldReset(true);
+
       const templateParams = {
         user: user.displayName,
-        name: roomSelected.room['name'],
-        start:  dayjs(new Date(rangeDate[0])).format("DD MMMM YYYY"), 
-        end:  dayjs(new Date(rangeDate[1])).format("DD MMMM YYYY"),
-        type: roomSelected.room['type'],
-        people: roomSelected.room['people'],  
-        total:  formatPrice(roomSelected.room['price'] * diferenciesDay),
-        email: user.email
-      }
+        name: roomSelected.room["name"],
+        start: dayjs(new Date(rangeDate[0])).format("DD MMMM YYYY"),
+        end: dayjs(new Date(rangeDate[1])).format("DD MMMM YYYY"),
+        type: roomSelected.room["type"],
+        people: roomSelected.room["people"],
+        total: formatPrice(roomSelected.room["price"] * diferenciesDay),
+        email: user.email,
+      };
 
-      emailjs.send(servicesId, templateId, templateParams,{publicKey}).then(
+      emailjs.send(servicesId, templateId, templateParams, { publicKey }).then(
         (response) => {
-          console.log('SUCCESS!', response.status, response.text);
+          console.log("SUCCESS!", response.status, response.text);
         },
         (error) => {
-          console.log('FAILED...', error);
-        },
+          console.log("FAILED...", error);
+        }
       );
 
-      getRoomsAll()
+      getRoomsAll();
     });
   };
 
@@ -193,7 +198,7 @@ const Reservate = () => {
   };
 
   useEffect(() => {
-    setCanReservate(false)
+    setCanReservate(false);
     getRoomsAll();
   }, []);
 
@@ -202,9 +207,22 @@ const Reservate = () => {
       {contextHolder}
       <div>
         <div className="searcher-reservate">
-          <Searcher onClickSearch={searchRooms} shouldReset={shouldReset}/>
+          <Searcher onClickSearch={searchRooms} shouldReset={shouldReset} />
+          {!auth.currentUser && (
+            <Alert
+              className="alert"
+              closable
+              action={
+                <Button size="small" color="primary" variant="outlined">
+                  <Link to={"/login"}>Iniciar sesión</Link>
+                </Button>
+              }
+              message="Recuerda que solo podrás realizar la reserva de las habitaciones si estás logueado. Te invitamos a iniciar sesión"
+              type="info"
+              showIcon
+            />
+          )}
         </div>
-
         <Card className="main">
           <div className="grid">
             {Object.keys(rooms).length === 0 && !loading && (
@@ -251,15 +269,16 @@ const Reservate = () => {
                           total
                         </>
                       )}
-                      <Button
-                        key="1"
-                        style={{ width: "90%", marginTop: "20px" }}
-                        disabled={!canReservate}
-                        onClick={() => showModal(rooms[key], key)}
-                      >
-                        Reservar
-                      </Button>
-                      ,
+                      {auth.currentUser && (
+                        <Button
+                          key="1"
+                          style={{ width: "90%", marginTop: "20px" }}
+                          disabled={!canReservate}
+                          onClick={() => showModal(rooms[key], key)}
+                        >
+                          Reservar
+                        </Button>
+                      )}
                     </>,
                   ]}
                 >
@@ -328,9 +347,7 @@ const Reservate = () => {
                 </span>
                 <br />
                 <strong>Cant de personas: </strong>{" "}
-                <span >
-                  {roomSelected.room.people}
-                </span>
+                <span>{roomSelected.room.people}</span>
                 <br />
                 <strong>Precio por noche: </strong>{" "}
                 {formatPrice(roomSelected?.room.price)}

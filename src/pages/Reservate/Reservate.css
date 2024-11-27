@@ -3,12 +3,17 @@
   width: 98vw;
   top: 60px;
   left: 0;
-  z-index: 30;
+  z-index: 30;  
+}
+
+.alert{
+
+  margin-left: 10px;
 }
 
 .main {
   padding: 1rem;
-  margin: 200px 3rem 3rem 3rem;
+  margin: 214px 3rem 3rem 3rem;
 }
 
 .grid {
