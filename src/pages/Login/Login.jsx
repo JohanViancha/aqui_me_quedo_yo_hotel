@@ -1,14 +1,13 @@
 import { CloseCircleFilled } from "@ant-design/icons";
 import { Button, Card, Form, Input, notification } from "antd";
 import {
-  signOut,  
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "firebase/auth";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
-import "./Login.css";
-import { useContext } from "react";
 import { LoadingContext } from "../../context/useLoadingContext";
+import "./Login.css";
 
 const Login = () => {
   const [form] = Form.useForm();

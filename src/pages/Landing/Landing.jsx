@@ -1,9 +1,4 @@
 import { Carousel } from "antd";
-import React from "react";
-import hotel1 from "../../../public/hotel_1.jpg";
-import hotel2 from "../../../public/hotel_2.jpg";
-import hotel3 from "../../../public/hotel_3.jpg";
-import hotel4 from "../../../public/hotel_4.jpg";
 import "./Landing.css";
 
 const Landing = () => {
@@ -12,16 +7,32 @@ const Landing = () => {
       <div className="carousel">
         <Carousel dotPosition="left" infinite={true} autoplay>
           <div className="container-carousel">
-            <img src={hotel1} />
+            <img
+              src={
+                "https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Fhotel_1.jpg?alt=media&token=a61658d9-283f-46b7-8c16-6e91ad9f6048"
+              }
+            />
           </div>
           <div className="container-carousel">
-            <img src={hotel2} />
+            <img
+              src={
+                "https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Fhotel_2.jpg?alt=media&token=8309eeb8-366a-4e1a-94d6-09bdb359207b"
+              }
+            />
           </div>
           <div className="container-carousel">
-            <img src={hotel3} />
+            <img
+              src={
+                "https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Fhotel_3.jpg?alt=media&token=bc7c30f3-efc9-47d8-b3da-c940f9d374eb"
+              }
+            />
           </div>
           <div className="container-carousel">
-            <img src={hotel4} />
+            <img
+              src={
+                "https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Fhotel_4.jpg?alt=media&token=354518a7-886e-47fe-b735-25e44665362f"
+              }
+            />
           </div>
         </Carousel>
       </div>

@@ -1,28 +1,28 @@
 import { TeamOutlined } from "@ant-design/icons";
+import emailjs from '@emailjs/browser';
 import {
   Button,
   Card,
+  Divider,
   Image,
   Modal,
   notification,
   Spin,
   Tag,
-  Divider,
   Typography,
 } from "antd";
-import { get, onValue, ref, set } from "firebase/database";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+import { onValue, ref, set } from "firebase/database";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { MdOutlinePets } from "react-icons/md";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../../../firebase.config";
+import { auth } from '../../../firebase.config.ts';
 import Searcher from "../../components/Searcher/Searcher";
 import { LoadingContext } from "../../context/useLoadingContext";
 import { ReservationContext } from "../../context/useReservationContext";
-import { auth } from '../../../firebase.config.ts'
 import "./Reservate.css";
-import "dayjs/locale/es";
-import dayjs from "dayjs";
-import emailjs from '@emailjs/browser'
 const { Meta } = Card;
 
 const Context = createContext({

@@ -1,5 +1,4 @@
 import { Divider, Layout, Menu, Dropdown, Button } from "antd";
-import logo3 from "../../../public/logo3.png";
 import "./Head.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthState } from "../../hooks/useAuthState.jsx";
@@ -59,9 +58,9 @@ const Head = () => {
       signOut(auth).then(() => {
         navigate("/login");
       });
-      return
+      return;
     }
-    navigate("/my-reservations")
+    navigate("/my-reservations");
   };
   const menuProps = {
     items,
@@ -71,7 +70,13 @@ const Head = () => {
   return (
     <Header className="header">
       <Link to={"/"}>
-        <img className="header__logo" src={logo3} alt="Logo" />
+        <img
+          className="header__logo"
+          src={
+            "https://firebasestorage.googleapis.com/v0/b/clima-95956.appspot.com/o/hotel%2Flogo3.png?alt=media&token=fe9f5fb6-1253-4e0c-9652-9a821b628fb7"
+          }
+          alt="Logo"
+        />
       </Link>
       <Menu
         theme="dark"
